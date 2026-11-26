@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TORO — Tax & Obligation Reminder Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-obsidian: #07070a;
+            --bg-charcoal: #111116;
+            --bg-elevated: #181820;
+            --gold-primary: #d4af37;
+            --gold-bright: #f5d061;
+            --gold-dim: rgba(212, 175, 55, 0.14);
+            --crimson-primary: #c81d25;
+            --crimson-glow: rgba(200, 29, 37, 0.25);
+            --emerald-paid: #10b981;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-subtle: rgba(212, 175, 55, 0.22);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            min-height: 100dvh;
+            background: radial-gradient(circle at top right, #1b0c10 0%, var(--bg-obsidian) 48%, #050507 100%);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .hidden { display: none !important; }
+
+        /* ================= LOGIN SCREEN ================= */
+        #login-screen {
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(circle at center, rgba(200, 29, 37, 0.14), rgba(7, 7, 10, 0.98) 70%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(17, 17, 22, 0.92);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 36px 28px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(16px);
+            animation: fadeUp 0.5s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toro-logo-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .toro-brand-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 800;
+            font-size: 30px;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--gold-bright), var(--gold-primary), #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .toro-tagline {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 26px;
+        }
+
+        .ethics-banner {
+            background: rgba(200, 29, 37, 0.1);
+            border-left: 3px solid var(--crimson-primary);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            color: #e5e7eb;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 6px;
+            letter-spacing: 0.4px;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0c0c10;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-control:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 3px var(--gold-dim);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-bright), var(--gold-primary));
+            color: #07070a;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-gold:hover { filter: brightness(1.06); }
+
+        .btn-crimson {
+            background: linear-gradient(135deg, #e0242d, var(--crimson-primary));
+            color: #fff;
+            box-shadow: 0 8px 20px var(--crimson-glow);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--gold-primary);
+        }
+
+        .btn-outline:hover { background: var(--gold-dim); }
+
+        .btn-sm {
+            padding: 7px 11px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        /* ================= APP SHELL (SIDEBAR & MAIN) ================= */
+        #app-shell {
+            display: flex;
+            min-height: 100dvh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--bg-charcoal);
+            border-right: 1px solid var(--border-subtle);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 40;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.18), rgba(200, 29, 37, 0.12));
+            color: var(--gold-bright);
+            border-left: 3px solid var(--gold-primary);
+        }
+
+        .badge-alert {
+            margin-left: auto;
+            background: var(--crimson-primary);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 99px;
+        }
+
+        .main-workspace {
+            flex: 1;
+            margin-left: 260px;
+            padding: 24px 28px 48px;
+            max-width: 100%;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-glass);
+            flex-wrap: wrap;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--gold-primary);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .admin-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--crimson-primary));
+            color: #07070a;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* ================= KPI CARDS & DASHBOARD ================= */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: linear-gradient(145deg, var(--bg-charcoal), var(--bg-elevated));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-subtle);
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, var(--gold-dim), transparent 70%);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .kpi-value.gold { color: var(--gold-bright); }
+        .kpi-value.crimson { color: #ff5c64; }
+        .kpi-value.emerald { color: var(--emerald-paid); }
+
+        .panel-box {
+            background: var(--bg-charcoal);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-bright);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ================= TABLE & BADGES ================= */
+        .toolbar-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-glass);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+            font-size: 13.5px;
+        }
+
+        th {
+            background: #16161e;
+            color: var(--gold-primary);
+            text-align: left;
+            padding: 13px 14px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--border-glass);
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .status-unpaid {
+            background: rgba(212, 175, 55, 0.16);
+            color: var(--gold-bright);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+        }
+
+        .status-overdue {
+            background: rgba(200, 29, 37, 0.2);
+            color: #ff6b72;
+            border: 1px solid rgba(200, 29, 37, 0.45);
+        }
+
+        .status-paid {
+            background: rgba(16, 185, 129, 0.16);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .action-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* ================= REMINDER & HISTORY CARDS ================= */
+        .reminder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .reminder-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reminder-item.urgent { border-left: 4px solid var(--crimson-primary); }
+        .reminder-item.upcoming { border-left: 4px solid var(--gold-primary); }
+
+        /* ================= MODAL & DIGITAL INVOICE LETTER ================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .modal-card {
+            background: var(--bg-charcoal);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            padding: 26px;
+            max-height: 92dvh;
+            overflow-y: auto;
+            animation: fadeUp 0.3s ease;
+        }
+
+        /* Official Digital Notice Paper (Printable) */
+        .invoice-paper {
+            background: #ffffff;
+            color: #111827;
+            border-radius: 12px;
+            padding: 32px 28px;
+            border-top: 6px solid #c81d25;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            gap: 12px;
+        }
+
+        .invoice-meta-table {
+            width: 100%;
+            min-width: auto;
+            margin: 16px 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .invoice-meta-table td {
+            border: 1px solid #e5e7eb;
+            padding: 10px 12px;
+            color: #111827;
+        }
+
+        .invoice-disclaimer {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        /* Ethics Footer */
+        .ethics-footer {
+            margin-top: 32px;
+            padding: 16px 20px;
+            background: rgba(17, 17, 22, 0.8);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-workspace {
+                margin-left: 0;
+                padding: 18px 16px 40px;
+            }
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body * { visibility: hidden; }
+            #printable-invoice-area, #printable-invoice-area * {
+                visibility: visible;
+            }
+            #printable-invoice-area {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG TORO EMBLEM DEFINITION -->
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <linearGradient id="toroGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f5d061"/>
+                <stop offset="50%" stop-color="#d4af37"/>
+                <stop offset="100%" stop-color="#996515"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- ================= 1. LOGIN ADMIN SCREEN ================= -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="toro-logo-wrap">
+                <svg width="42" height="42" viewBox="0 0 64 64" fill="none">
+                    <path d="M10 14C14 24 22 28 32 28C42 28 50 24 54 14C52 28 45 35 38 37L32 54L26 37C19 35 12 28 10 14Z" fill="url(#toroGoldGrad)"/>
+                    <path d="M22 36H42L32 56L22 36Z" fill="#c81d25"/>
+                </svg>
+                <span class="toro-brand-title">TORO</span>
+            </div>
+            <div class="toro-tagline">Tax & Obligation Reminder Online</div>
+
+            <div class="ethics-banner">
+                <strong>Akses Terbatas Admin:</strong> Data pelanggan dilindungi dan hanya dapat diakses oleh administrator berwenang. TORO adalah sistem manajemen pengingat administrasi, bukan instansi pemerintah atau lembaga penegak hukum.
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username Admin</label>
+                    <input type="text" id="login-user" class="input-control" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" id="login-pass" class="input-control" value="toro2026" required>
+                </div>
+                <p id="login-error" style="color:#ff5c64;font-size:12px;margin-bottom:12px;" class="hidden">Username atau password salah. (Demo: admin / toro2026)</p>
+                <button type="submit" class="btn btn-gold" style="width:100%;">Masuk ke Dashboard TORO</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 2. MAIN DASHBOARD SHELL ================= -->
+    <div id="app-shell" class="hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="toro-logo-wrap" style="justify-content:flex-start;padding-left:6px;">
+                    <svg width="34" height="34" viewBox="0 0 64 64" fill="none">
+                        <path d="M10 14C14 24 22 28 32 28C42 28 50 24 54 14C52 28 45 35 38 37L32 54L26 37C19 35 12 28 10 14Z" fill="url(#toroGoldGrad)"/>
+                        <path d="M22 36H42L32 56L22 36Z" fill="#c81d25"/>
+                    </svg>
+                    <div>
+                        <div class="toro-brand-title" style="font-size:22px;">TORO</div>
+                        <div style="font-size:10px;color:var(--text-muted);letter-spacing:0.8px;">FINTECH REMINDER</div>
+                    </div>
+                </div>
+
+                <ul class="nav-list">
+                    <li class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                        <span>📊</span> Dashboard Utama
+                    </li>
+                    <li class="nav-item" data-tab="billing" onclick="switchTab('billing')">
+                        <span>💳</span> Data Penagihan
+                    </li>
+                    <li class="nav-item" data-tab="reminders" onclick="switchTab('reminders')">
+                        <span>🔔</span> Pusat Pengingat
+                        <span class="badge-alert" id="nav-alert-count">0</span>
+                    </li>
+                    <li class="nav-item" data-tab="reports" onclick="switchTab('reports')">
+                        <span>📑</span> Laporan & Ekspor
+                    </li>
+                    <li class="nav-item" data-tab="profile" onclick="switchTab('profile')">
+                        <span>🛡️</span> Profil Admin
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <button class="btn btn-outline" style="width:100%;" onclick="logoutAdmin()">🚪 Keluar Sesi</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Workspace -->
+        <main class="main-workspace">
+            <header class="topbar">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                    <div>
+                        <h2 id="page-heading" style="font-size:20px;font-weight:800;">Dashboard Utama</h2>
+                        <p style="font-size:12px;color:var(--text-muted);" id="current-date-label">Sistem Pengingat Kewajiban & Administrasi</p>
+                    </div>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <button class="btn btn-gold btn-sm" onclick="openBillingModal()">+ Tambah Tagihan</button>
+                    <div class="admin-chip" onclick="switchTab('profile')">
+                        <div class="admin-avatar" id="topbar-avatar">AD</div>
+                        <span id="topbar-admin-name">Administrator</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB 1: DASHBOARD UTAMA -->
+            <section id="tab-dashboard" class="tab-section">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Belum Dibayar</div>
+                        <div class="kpi-value gold" id="kpi-unpaid">Rp 0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Sudah Dibayar</div>
+                        <div class="kpi-value emerald" id="kpi-paid">Rp 0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Jumlah Wajib Bayar</div>
+                        <div class="kpi-value" id="kpi-total-clients">0 Entitas</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Tagihan Terlambat</div>
+                        <div class="kpi-value crimson" id="kpi-overdue">0 Tagihan</div>
+                    </div>
+                </div>
+
+                <!-- Grafik Statistik Pembayaran (HTML5 Canvas) -->
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">📈 Grafik Statistik Pembayaran & Kewajiban</div>
+                        <span style="font-size:12px;color:var(--text-muted);">Perbandingan Pajak vs Utang & Status Lunas</span>
+                    </div>
+                    <div style="width:100%;height:260px;position:relative;">
+                        <canvas id="stats-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Ringkasan Tagihan Terbaru -->
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">⚡ Daftar Tagihan Prioritas</div>
+                        <button class="btn btn-outline btn-sm" onclick="switchTab('billing')">Kelola Semua →</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nama Wajib Bayar</th>
+                                    <th>Jenis</th>
+                                    <th>Nominal</th>
+                                    <th>Jatuh Tempo</th>
+                                    <th>Status</th>
+                                    <th>Surat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-preview-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: FITUR PENAGIHAN -->
+            <section id="tab-billing" class="tab-section hidden">
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">💳 Manajemen Penagihan & Wajib Bayar</div>
+                        <button class="btn btn-gold btn-sm" onclick="openBillingModal()">+ Tambah Data Baru</button>
+                    </div>
+
+                    <div class="toolbar-row">
+                        <input type="text" id="search-input" class="input-control" style="max-width:260px;" placeholder="🔍 Cari nama atau ID pelanggan..." oninput="renderAll()">
+                        <select id="filter-type" class="input-control" style="max-width:170px;" onchange="renderAll()">
+                            <option value="ALL">Semua Jenis</option>
+                            <option value="Pajak">Kewajiban Pajak</option>
+                            <option value="Utang">Kewajiban Utang</option>
+                        </select>
+                        <select id="filter-status" class="input-control" style="max-width:180px;" onchange="renderAll()">
+                            <option value="ALL">Semua Status</option>
+                            <option value="Belum Dibayar">Belum Dibayar</option>
+                            <option value="Terlambat">Terlambat</option>
+                            <option value="Sudah Dibayar">Sudah Dibayar</option>
+                        </select>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Pelanggan</th>
+                                    <th>Nama Wajib Bayar</th>
+                                    <th>Jenis</th>
+                                    <th>Nominal</th>
+                                    <th>Jatuh Tempo</th>
+                                    <th>Status</th>
+                                    <th>Aksi Administrasi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="billing-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: FITUR PENGINGAT & RIWAYAT -->
+            <section id="tab-reminders" class="tab-section hidden">
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">🚨 Peringatan Terlambat & Mendekati Jatuh Tempo</div>
+                    </div>
+                    <div class="reminder-grid" id="reminders-container"></div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">✅ Riwayat Pembayaran Selesai</div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nama Wajib Bayar</th>
+                                    <th>Jenis</th>
+                                    <th>Nominal Lunas</th>
+                                    <th>Tanggal Pelunasan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: LAPORAN BULANAN & EKSPOR DATA -->
+            <section id="tab-reports" class="tab-section hidden">
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">📑 Laporan Rekapitulasi Bulanan</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-gold btn-sm" onclick="exportCSV()">📥 Ekspor CSV / Excel</button>
+                            <button class="btn btn-outline btn-sm" onclick="exportJSON()">📦 Ekspor Backup JSON</button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Bulan Jatuh Tempo</th>
+                                    <th>Jumlah Transaksi</th>
+                                    <th>Total Tagihan</th>
+                                    <th>Terkumpul (Lunas)</th>
+                                    <th>Sisa Kewajiban</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthly-report-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: PROFIL ADMIN -->
+            <section id="tab-profile" class="tab-section hidden">
+                <div class="panel-box" style="max-width:540px;">
+                    <div class="panel-header">
+                        <div class="panel-title">🛡️ Profil Administrator & Pengaturan Penerbit</div>
+                    </div>
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label>Nama Lengkap Admin</label>
+                            <input type="text" id="prof-name" class="input-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Jabatan / Divisi</label>
+                            <input type="text" id="prof-role" class="input-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Entitas / Perusahaan Penerbit Tagihan</label>
+                            <input type="text" id="prof-org" class="input-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Kontak Administrasi</label>
+                            <input type="email" id="prof-email" class="input-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-gold">Simpan Perubahan Profil</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ETIKA & DISCLAIMER FOOTER -->
+            <footer class="ethics-footer">
+                <strong>Pemberitahuan Kepatuhan & Etika TORO:</strong> TORO (Tax & Obligation Reminder Online) merupakan sistem pengelolaan pengingat tagihan dan administrasi keuangan internal, <strong>bukan</strong> instansi pemerintah, Direktorat Jenderal Pajak, maupun lembaga penegak hukum. Seluruh pemberitahuan tagihan bersifat informatif, sopan, bebas dari intimidasi, serta hanya dapat diakses oleh administrator berwenang.
+            </footer>
+        </main>
+    </div>
+
+    <!-- ================= MODAL TAMBAH / EDIT TAGIHAN ================= -->
+    <div id="billing-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+                <h3 id="modal-billing-title" style="color:var(--gold-bright);">Tambah Data Tagihan</h3>
+                <button class="btn btn-outline btn-sm" onclick="closeBillingModal()">✕</button>
+            </div>
+
+            <form id="billing-form">
+                <input type="hidden" id="edit-record-id">
+                <div class="form-group">
+                    <label>Nomor Identitas / ID Pelanggan</label>
+                    <input type="text" id="field-cust-id" class="input-control" placeholder="Contoh: ID-2026-001" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Wajib Bayar (Individu / Badan Usaha)</label>
+                    <input type="text" id="field-name" class="input-control" placeholder="Masukkan nama lengkap atau perusahaan" required>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Kewajiban / Tagihan</label>
+                    <select id="field-type" class="input-control" required>
+                        <option value="Pajak">Administrasi Pajak (Non-Pemerintah / Internal)</option>
+                        <option value="Utang">Kewajiban Utang / Piutang Usaha</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nominal Tagihan (Rp)</label>
+                    <input type="number" id="field-amount" class="input-control" min="1000" placeholder="Contoh: 2500000" required>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Jatuh Tempo</label>
+                    <input type="date" id="field-due" class="input-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Status Pembayaran</label>
+                    <select id="field-status" class="input-control">
+                        <option value="Belum Dibayar">Belum Dibayar</option>
+                        <option value="Sudah Dibayar">Sudah Dibayar</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:20px;">
+                    <button type="submit" class="btn btn-gold" style="flex:1;">Simpan Data</button>
+                    <button type="button" class="btn btn-outline" onclick="closeBillingModal()">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL SURAT TAGIHAN DIGITAL ================= -->
+    <div id="invoice-modal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width:640px;">
+            <div class="no-print" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap;">
+                <h3 style="color:var(--gold-bright);">📄 Surat Pemberitahuan Tagihan Digital</h3>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+                    <button class="btn btn-outline btn-sm" onclick="closeInvoiceModal()">✕ Tutup</button>
+                </div>
+            </div>
+
+            <!-- Area Surat Resmi yang Dapat Dicetak / Diunduh PDF -->
+            <div id="printable-invoice-area" class="invoice-paper">
+                <div class="invoice-header">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+                            <path d="M10 14C14 24 22 28 32 28C42 28 50 24 54 14C52 28 45 35 38 37L32 54L26 37C19 35 12 28 10 14Z" fill="#d4af37"/>
+                            <path d="M22 36H42L32 56L22 36Z" fill="#c81d25"/>
+                        </svg>
+                        <div>
+                            <div style="font-family:'Cinzel',serif;font-weight:800;font-size:22px;color:#111827;letter-spacing:2px;">TORO</div>
+                            <div style="font-size:11px;color:#6b7280;font-weight:600;">Tax & Obligation Reminder Online</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right;font-size:12px;">
+                        <div style="font-weight:800;color:#c81d25;">SURAT PENGINGAT TAGIHAN</div>
+                        <div id="inv-number" style="font-family:'JetBrains Mono',monospace;font-weight:700;margin-top:2px;">No: TORO/2026/001</div>
+                        <div id="inv-date" style="color:#6b7280;margin-top:2px;">Tanggal: -</div>
+                    </div>
+                </div>
+
+                <p style="font-size:13.5px;margin-bottom:12px;">Kepada Yth.,<br><strong id="inv-recipient" style="font-size:15px;">Nama Penerima</strong><br><span id="inv-cust-id" style="font-size:12px;color:#4b5563;">ID Pelanggan: -</span></p>
+
+                <p style="font-size:13.5px;line-height:1.65;color:#374151;">
+                    Dengan hormat,<br>
+                    Melalui surat pemberitahuan digital ini, kami dari <strong id="inv-org-name">TORO Financial Administration</strong> menyampaikan pengingat secara ramah terkait rincian kewajiban administrasi Anda yang tercatat pada sistem kami:
+                </p>
+
+                <table class="invoice-meta-table">
+                    <tr>
+                        <td style="width:40%;background:#f9fafb;font-weight:700;">Jenis Kewajiban</td>
+                        <td id="inv-type">-</td>
+                    </tr>
+                    <tr>
+                        <td style="background:#f9fafb;font-weight:700;">Nominal Tagihan</td>
+                        <td id="inv-amount" style="font-weight:800;color:#c81d25;font-size:15px;">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td style="background:#f9fafb;font-weight:700;">Tanggal Jatuh Tempo</td>
+                        <td id="inv-due" style="font-weight:700;">-</td>
+                    </tr>
+                    <tr>
+                        <td style="background:#f9fafb;font-weight:700;">Status Saat Ini</td>
+                        <td id="inv-status">-</td>
+                    </tr>
+                </table>
+
+                <p style="font-size:13px;line-height:1.65;color:#374151;">
+                    Kami mengharapkan penyelesaian kewajiban tersebut sebelum atau pada tanggal jatuh tempo di atas demi kelancaran pencatatan administrasi bersama. Apabila Anda telah melakukan pembayaran sebelum surat ini diterima, mohon abaikan pengingat ini dan hubungi tim administrasi kami untuk pembaruan status.
+                </p>
+
+                <div style="margin-top:22px;display:flex;justify-content:space-between;align-items:flex-end;">
+                    <div style="font-size:12px;color:#4b5563;">
+                        Hormat kami,<br><br><br>
+                        <strong id="inv-admin-sign" style="color:#111827;">Administrator TORO</strong><br>
+                        <span id="inv-admin-role">Divisi Administrasi Keuangan</span>
+                    </div>
+                    <div style="border:1.5px solid #d4af37;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:800;color:#996515;">
+                        DOKUMEN DIGITAL TERVERIFIKASI
+                    </div>
+                </div>
+
+                <div class="invoice-disclaimer">
+                    <strong>Catatan Penting:</strong> TORO merupakan sistem pengelolaan pengingat tagihan dan bukan merupakan instansi pemerintah maupun lembaga penegak hukum. Surat ini diterbitkan semata-mata sebagai sarana pengingat administrasi keuangan secara profesional.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= STATE & STORAGE KEYS =================
+        const STORAGE_RECORDS = 'toro_billing_records_v1';
+        const STORAGE_ADMIN = 'toro_admin_profile_v1';
+        const STORAGE_AUTH = 'toro_admin_session_v1';
+
+        const DEFAULT_ADMIN = {
+            name: 'Raden Wijaya, S.E.',
+            role: 'Kepala Administrasi & Penagihan',
+            org: 'PT TORO Finansial Nusantara',
+            email: 'admin@toro-reminder.id'
+        };
+
+        // Sample realistic data with relative dates so overdue & upcoming work immediately
+        function getOffsetDate(daysOffset) {
+            const d = new Date();
+            d.setDate(d.getDate() + daysOffset);
+            return d.toISOString().split('T')[0];
+        }
+
+        const SAMPLE_RECORDS = [
+            {
+                id: 'REC-101',
+                custId: 'NPW-882104',
+                name: 'PT Cakrawala Logistik',
+                type: 'Pajak',
+                amount: 14500000,
+                dueDate: getOffsetDate(-3),
+                status: 'Belum Dibayar',
+                paidDate: null
+            },
+            {
+                id: 'REC-102',
+                custId: 'CLT-440912',
+                name: 'CV Sentosa Abadi',
+                type: 'Utang',
+                amount: 8750000,
+                dueDate: getOffsetDate(2),
+                status: 'Belum Dibayar',
+                paidDate: null
+            },
+            {
+                id: 'REC-103',
+                custId: 'NPW-339102',
+                name: 'Budi Santoso Pratama',
+                type: 'Pajak',
+                amount: 3200000,
+                dueDate: getOffsetDate(10),
+                status: 'Belum Dibayar',
+                paidDate: null
+            },
+            {
+                id: 'REC-104',
+                custId: 'CLT-771209',
+                name: 'PT Karya Mandiri Jaya',
+                type: 'Utang',
+                amount: 19000000,
+                dueDate: getOffsetDate(-7),
+                status: 'Sudah Dibayar',
+                paidDate: getOffsetDate(-5)
+            }
+        ];
+
+        let records = JSON.parse(localStorage.getItem(STORAGE_RECORDS) || 'null') || SAMPLE_RECORDS;
+        let adminProfile = JSON.parse(localStorage.getItem(STORAGE_ADMIN) || 'null') || DEFAULT_ADMIN;
+
+        function saveData() {
+            localStorage.setItem(STORAGE_RECORDS, JSON.stringify(records));
+            localStorage.setItem(STORAGE_ADMIN, JSON.stringify(adminProfile));
+        }
+
+        // ================= UTILITIES =================
+        function formatRupiah(num) {
+            return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+        }
+
+        function formatIndoDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function computeEffectiveStatus(rec) {
+            if (rec.status === 'Sudah Dibayar') return 'Sudah Dibayar';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const due = new Date(rec.dueDate + 'T00:00:00');
+            return due < today ? 'Terlambat' : 'Belum Dibayar';
+        }
+
+        function getDaysDiff(dateStr) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const due = new Date(dateStr + 'T00:00:00');
+            return Math.round((due - today) / (1000 * 60 * 60 * 24));
+        }
+
+        // ================= AUTHENTICATION =================
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem(STORAGE_AUTH) === 'true';
+            if (isLoggedIn) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-shell').classList.remove('hidden');
+                initApp();
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('app-shell').classList.add('hidden');
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('login-user').value.trim();
+            const p = document.getElementById('login-pass').value.trim();
+            if (u === 'admin' && p === 'toro2026') {
+                localStorage.setItem(STORAGE_AUTH, 'true');
+                document.getElementById('login-error').classList.add('hidden');
+                checkAuth();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        });
+
+        function logoutAdmin() {
+            localStorage.removeItem(STORAGE_AUTH);
+            checkAuth();
+        }
+
+        // ================= NAVIGATION & PROFILE =================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.tab === tabName);
+            });
+
+            const titles = {
+                dashboard: 'Dashboard Utama',
+                billing: 'Data Penagihan & Wajib Bayar',
+                reminders: 'Pusat Pengingat & Riwayat',
+                reports: 'Laporan Bulanan & Ekspor Data',
+                profile: 'Profil Administrator'
+            };
+            document.getElementById('page-heading').textContent = titles[tabName] || 'TORO';
+            document.getElementById('sidebar').classList.remove('open');
+
+            if (tabName === 'dashboard') drawChart();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function syncAdminUI() {
+            document.getElementById('topbar-admin-name').textContent = adminProfile.name;
+            const initials = adminProfile.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+            document.getElementById('topbar-avatar').textContent = initials || 'AD';
+
+            document.getElementById('prof-name').value = adminProfile.name;
+            document.getElementById('prof-role').value = adminProfile.role;
+            document.getElementById('prof-org').value = adminProfile.org;
+            document.getElementById('prof-email').value = adminProfile.email;
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            adminProfile = {
+                name: document.getElementById('prof-name').value.trim(),
+                role: document.getElementById('prof-role').value.trim(),
+                org: document.getElementById('prof-org').value.trim(),
+                email: document.getElementById('prof-email').value.trim()
+            };
+            saveData();
+            syncAdminUI();
+            alert('Profil administrator berhasil diperbarui.');
+        });
+
+        // ================= CRUD OPERATIONS =================
+        function openBillingModal(id = null) {
+            const modal = document.getElementById('billing-modal');
+            const title = document.getElementById('modal-billing-title');
+            const form = document.getElementById('billing-form');
+            form.reset();
+
+            if (id) {
+                const rec = records.find(r => r.id === id);
+                if (!rec) return;
+                title.textContent = 'Edit Data Tagihan';
+                document.getElementById('edit-record-id').value = rec.id;
+                document.getElementById('field-cust-id').value = rec.custId;
+                document.getElementById('field-name').value = rec.name;
+                document.getElementById('field-type').value = rec.type;
+                document.getElementById('field-amount').value = rec.amount;
+                document.getElementById('field-due').value = rec.dueDate;
+                document.getElementById('field-status').value = rec.status;
+            } else {
+                title.textContent = 'Tambah Data Tagihan Baru';
+                document.getElementById('edit-record-id').value = '';
+                document.getElementById('field-cust-id').value = 'ID-' + Math.floor(100000 + Math.random() * 900000);
+                document.getElementById('field-due').value = getOffsetDate(7);
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeBillingModal() {
+            document.getElementById('billing-modal').classList.add('hidden');
+        }
+
+        document.getElementById('billing-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('edit-record-id').value;
+            const statusVal = document.getElementById('field-status').value;
+
+            const payload = {
+                id: editId || 'REC-' + Date.now().toString().slice(-5),
+                custId: document.getElementById('field-cust-id').value.trim(),
+                name: document.getElementById('field-name').value.trim(),
+                type: document.getElementById('field-type').value,
+                amount: Number(document.getElementById('field-amount').value),
+                dueDate: document.getElementById('field-due').value,
+                status: statusVal,
+                paidDate: statusVal === 'Sudah Dibayar' ? new Date().toISOString().split('T')[0] : null
+            };
+
+            if (editId) {
+                const idx = records.findIndex(r => r.id === editId);
+                if (idx !== -1) records[idx] = payload;
+            } else {
+                records.unshift(payload);
+            }
+
+            saveData();
+            closeBillingModal();
+            renderAll();
+        });
+
+        function markAsPaid(id) {
+            const rec = records.find(r => r.id === id);
+            if (!rec) return;
+            rec.status = 'Sudah Dibayar';
+            rec.paidDate = new Date().toISOString().split('T')[0];
+            saveData();
+            renderAll();
+        }
+
+        function deleteRecord(id) {
+            if (!confirm('Hapus data penagihan ini dari sistem?')) return;
+            records = records.filter(r => r.id !== id);
+            saveData();
+            renderAll();
+        }
+
+        // ================= DIGITAL INVOICE LETTER =================
+        function openInvoiceLetter(id) {
+            const rec = records.find(r => r.id === id);
+            if (!rec) return;
+            const effStatus = computeEffectiveStatus(rec);
+
+            document.getElementById('inv-number').textContent = `No: TORO/${new Date().getFullYear()}/${rec.id}`;
+            document.getElementById('inv-date').textContent = `Tanggal: ${formatIndoDate(new Date().toISOString().split('T')[0])}`;
+            document.getElementById('inv-recipient').textContent = rec.name;
+            document.getElementById('inv-cust-id').textContent = `ID Pelanggan: ${rec.custId}`;
+            document.getElementById('inv-org-name').textContent = adminProfile.org;
+            document.getElementById('inv-type').textContent = rec.type === 'Pajak' ? 'Kewajiban Administrasi Pajak' : 'Kewajiban Utang / Piutang';
+            document.getElementById('inv-amount').textContent = formatRupiah(rec.amount);
+            document.getElementById('inv-due').textContent = formatIndoDate(rec.dueDate);
+            document.getElementById('inv-status').textContent = effStatus;
+            document.getElementById('inv-admin-sign').textContent = adminProfile.name;
+            document.getElementById('inv-admin-role').textContent = `${adminProfile.role} — ${adminProfile.org}`;
+
+            document.getElementById('invoice-modal').classList.remove('hidden');
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').classList.add('hidden');
+        }
+
+        // ================= RENDERING ALL SECTIONS =================
+        function renderAll() {
+            let totalUnpaid = 0;
+            let totalPaid = 0;
+            let overdueCount = 0;
+            const uniqueClients = new Set();
+
+            records.forEach(r => {
+                uniqueClients.add(r.custId);
+                const eff = computeEffectiveStatus(r);
+                if (eff === 'Sudah Dibayar') {
+                    totalPaid += r.amount;
+                } else {
+                    totalUnpaid += r.amount;
+                    if (eff === 'Terlambat') overdueCount++;
+                }
+            });
+
+            document.getElementById('kpi-unpaid').textContent = formatRupiah(totalUnpaid);
+            document.getElementById('kpi-paid').textContent = formatRupiah(totalPaid);
+            document.getElementById('kpi-total-clients').textContent = `${uniqueClients.size} Wajib Bayar`;
+            document.getElementById('kpi-overdue').textContent = `${overdueCount} Tagihan`;
+
+            renderTables();
+            renderRemindersAndHistory();
+            renderMonthlyReports();
+            drawChart();
+        }
+
+        function getStatusBadgeHTML(effStatus) {
+            if (effStatus === 'Sudah Dibayar') return `<span class="status-pill status-paid">Sudah Dibayar</span>`;
+            if (effStatus === 'Terlambat') return `<span class="status-pill status-overdue">Terlambat</span>`;
+            return `<span class="status-pill status-unpaid">Belum Dibayar</span>`;
+        }
+
+        function renderTables() {
+            const search = (document.getElementById('search-input').value || '').toLowerCase();
+            const typeFilter = document.getElementById('filter-type').value;
+            const statusFilter = document.getElementById('filter-status').value;
+
+            const filtered = records.filter(r => {
+                const eff = computeEffectiveStatus(r);
+                const matchText = r.name.toLowerCase().includes(search) || r.custId.toLowerCase().includes(search);
+                const matchType = typeFilter === 'ALL' || r.type === typeFilter;
+                const matchStatus = statusFilter === 'ALL' || eff === statusFilter;
+                return matchText && matchType && matchStatus;
+            });
+
+            const tbody = document.getElementById('billing-tbody');
+            tbody.innerHTML = filtered.length ? '' : `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Tidak ada data tagihan yang sesuai filter.</td></tr>`;
+
+            filtered.forEach(r => {
+                const eff = computeEffectiveStatus(r);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">${r.custId}</td>
+                    <td><strong>${r.name}</strong></td>
+                    <td>${r.type}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700;">${formatRupiah(r.amount)}</td>
+                    <td>${formatIndoDate(r.dueDate)}</td>
+                    <td>${getStatusBadgeHTML(eff)}</td>
+                    <td>
+                        <div class="action-group">
+                            ${eff !== 'Sudah Dibayar' ? `<button class="btn btn-gold btn-sm" onclick="markAsPaid('${r.id}')" title="Tandai Lunas">✓ Lunas</button>` : ''}
+                            <button class="btn btn-outline btn-sm" onclick="openInvoiceLetter('${r.id}')">📄 Surat</button>
+                            <button class="btn btn-outline btn-sm" onclick="openBillingModal('${r.id}')">✎</button>
+                            <button class="btn btn-crimson btn-sm" onclick="deleteRecord('${r.id}')">🗑</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Dashboard Top 5 Preview
+            const previewTbody = document.getElementById('dashboard-preview-tbody');
+            previewTbody.innerHTML = '';
+            records.slice(0, 5).forEach(r => {
+                const eff = computeEffectiveStatus(r);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">${r.custId}</td>
+                    <td><strong>${r.name}</strong></td>
+                    <td>${r.type}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;">${formatRupiah(r.amount)}</td>
+                    <td>${formatIndoDate(r.dueDate)}</td>
+                    <td>${getStatusBadgeHTML(eff)}</td>
+                    <td><button class="btn btn-outline btn-sm" onclick="openInvoiceLetter('${r.id}')">📄 Cetak Surat</button></td>
+                `;
+                previewTbody.appendChild(tr);
+            });
+        }
+
+        function renderRemindersAndHistory() {
+            const container = document.getElementById('reminders-container');
+            container.innerHTML = '';
+            let activeAlerts = 0;
+
+            records.forEach(r => {
+                const eff = computeEffectiveStatus(r);
+                if (eff === 'Sudah Dibayar') return;
+                activeAlerts++;
+                const diff = getDaysDiff(r.dueDate);
+                const isOverdue = diff < 0;
+                const labelInfo = isOverdue
+                    ? `⚠️ Terlambat ${Math.abs(diff)} hari dari jatuh tempo`
+                    : (diff === 0 ? '⏰ Jatuh tempo HARI INI' : `🔔 Pengingat: ${diff} hari lagi menuju jatuh tempo`);
+
+                const card = document.createElement('div');
+                card.className = `reminder-item ${isOverdue ? 'urgent' : 'upcoming'}`;
+                card.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <strong style="font-size:14px;">${r.name}</strong>
+                        ${getStatusBadgeHTML(eff)}
+                    </div>
+                    <div style="font-size:12px;color:${isOverdue ? '#ff6b72' : 'var(--gold-bright)'};font-weight:700;">${labelInfo}</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;">${formatRupiah(r.amount)} (${r.type})</div>
+                    <div style="display:flex;gap:8px;margin-top:6px;">
+                        <button class="btn btn-outline btn-sm" onclick="openInvoiceLetter('${r.id}')">📄 Buat Surat Pengingat</button>
+                        <button class="btn btn-gold btn-sm" onclick="markAsPaid('${r.id}')">✓ Tandai Lunas</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (activeAlerts === 0) {
+                container.innerHTML = `<p style="color:var(--text-muted);font-size:13.5px;">Semua tagihan telah lunas. Tidak ada peringatan aktif saat ini.</p>`;
+            }
+            document.getElementById('nav-alert-count').textContent = activeAlerts;
+
+            // Payment History Table
+            const histTbody = document.getElementById('history-tbody');
+            const paidList = records.filter(r => r.status === 'Sudah Dibayar');
+            histTbody.innerHTML = paidList.length ? '' : `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Belum ada riwayat pelunasan.</td></tr>`;
+
+            paidList.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">${r.custId}</td>
+                    <td><strong>${r.name}</strong></td>
+                    <td>${r.type}</td>
+                    <td style="color:var(--emerald-paid);font-weight:700;">${formatRupiah(r.amount)}</td>
+                    <td>${formatIndoDate(r.paidDate || r.dueDate)}</td>
+                `;
+                histTbody.appendChild(tr);
+            });
+        }
+
+        function renderMonthlyReports() {
+            const groups = {};
+            records.forEach(r => {
+                const ym = r.dueDate.slice(0, 7); // YYYY-MM
+                if (!groups[ym]) groups[ym] = { count: 0, total: 0, paid: 0, unpaid: 0 };
+                groups[ym].count++;
+                groups[ym].total += r.amount;
+                if (r.status === 'Sudah Dibayar') groups[ym].paid += r.amount;
+                else groups[ym].unpaid += r.amount;
+            });
+
+            const tbody = document.getElementById('monthly-report-tbody');
+            tbody.innerHTML = '';
+            Object.keys(groups).sort().reverse().forEach(ym => {
+                const g = groups[ym];
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${ym}</strong></td>
+                    <td>${g.count} Tagihan</td>
+                    <td style="font-family:'JetBrains Mono',monospace;">${formatRupiah(g.total)}</td>
+                    <td style="color:var(--emerald-paid);font-family:'JetBrains Mono',monospace;">${formatRupiah(g.paid)}</td>
+                    <td style="color:var(--gold-bright);font-family:'JetBrains Mono',monospace;">${formatRupiah(g.unpaid)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= EXPORT DATA (CSV & JSON) =================
+        function exportCSV() {
+            const headers = ['ID_Transaksi', 'ID_Pelanggan', 'Nama_Wajib_Bayar', 'Jenis', 'Nominal', 'Jatuh_Tempo', 'Status'];
+            const rows = records.map(r => [
+                r.id, r.custId, `"${r.name}"`, r.type, r.amount, r.dueDate, computeEffectiveStatus(r)
+            ]);
+            const csv = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            downloadBlob(csv, `TORO_Laporan_Tagihan_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv;charset=utf-8;');
+        }
+
+        function exportJSON() {
+            const jsonStr = JSON.stringify({ exportedAt: new Date().toISOString(), admin: adminProfile, records }, null, 2);
+            downloadBlob(jsonStr, `TORO_Backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
+        }
+
+        function downloadBlob(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ================= CUSTOM CANVAS BAR CHART =================
+        function drawChart() {
+            const canvas = document.getElementById('stats-chart');
+            if (!canvas) return;
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+            const ctx = canvas.getContext('2d');
+
+            let paidSum = 0, unpaidSum = 0, overdueSum = 0, taxSum = 0, debtSum = 0;
+            records.forEach(r => {
+                const eff = computeEffectiveStatus(r);
+                if (eff === 'Sudah Dibayar') paidSum += r.amount;
+                else if (eff === 'Terlambat') overdueSum += r.amount;
+                else unpaidSum += r.amount;
+
+                if (r.type === 'Pajak') taxSum += r.amount;
+                else debtSum += r.amount;
+            });
+
+            const bars = [
+                { label: 'Sudah Dibayar', val: paidSum, color: '#10b981' },
+                { label: 'Belum Dibayar', val: unpaidSum, color: '#d4af37' },
+                { label: 'Terlambat', val: overdueSum, color: '#c81d25' },
+                { label: 'Total Pajak', val: taxSum, color: '#f5d061' },
+                { label: 'Total Utang', val: debtSum, color: '#9ca3af' }
+            ];
+
+            const maxVal = Math.max(...bars.map(b => b.val), 1000000);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padLeft = 24, padRight = 24, padTop = 30, padBottom = 38;
+            const chartW = canvas.width - padLeft - padRight;
+            const chartH = canvas.height - padTop - padBottom;
+            const slotW = chartW / bars.length;
+            const barW = Math.min(54, slotW * 0.55);
+
+            // Grid lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+            ctx.lineWidth = 1;
+            for (let g = 0; g <= 3; g++) {
+                const gy = padTop + (chartH / 3) * g;
+                ctx.beginPath();
+                ctx.moveTo(padLeft, gy);
+                ctx.lineTo(canvas.width - padRight, gy);
+                ctx.stroke();
+            }
+
+            bars.forEach((b, idx) => {
+                const barH = (b.val / maxVal) * chartH;
+                const x = padLeft + idx * slotW + (slotW - barW) / 2;
+                const y = padTop + chartH - barH;
+
+                ctx.fillStyle = b.color;
+                ctx.beginPath();
+                ctx.roundRect(x, y, barW, barH, [6, 6, 0, 0]);
+                ctx.fill();
+
+                // Value label on top
+                ctx.fillStyle = '#e5e7eb';
+                ctx.font = '600 11px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                const shortVal = b.val >= 1000000 ? (b.val / 1000000).toFixed(1) + ' Jt' : (b.val / 1000).toFixed(0) + ' Rb';
+                ctx.fillText(shortVal, x + barW / 2, y - 7);
+
+                // Bottom Category Label
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '600 11px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText(b.label, x + barW / 2, padTop + chartH + 20);
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('tab-dashboard').classList.contains('hidden')) {
+                drawChart();
+            }
+        });
+
+        function initApp() {
+            const nowStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('current-date-label').textContent = nowStr;
+            syncAdminUI();
+            renderAll();
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
